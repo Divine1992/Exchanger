@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="admin" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Login</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <script type="text/javascript" src="js/administration.js"></script>
+</head>
+<body ng-controller="registration">
+            <h2>Login</h2>
+            <form th:action="@{/login}" method="POST" class="form-signin">
+                    <h3 class="form-signin-heading" th:text="Welcome"></h3>
+                    <br/>
+                    <input type="text" id="login" name="login"  th:placeholder="login"
+                    /> <br/>
+                    <input type="password"  th:placeholder="Password"
+                        id="password" name="password"/> <br />
+                    <button name="Submit" value="Login" type="Submit" th:text="Login"></button>
+            </form>
+            <div>
+               <h2>Registration</h2>
+                <div class="col-md-6 col-md-offset-3">
+                    <input type="text" ng-model="user.login"/>
+                    <input type="password" ng-model="user.password"/>
+                    <button ng-click="registration(user)">Sign In</button>
+                </div>
+            </div>
+</body>
+</html>
