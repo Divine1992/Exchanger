@@ -1,32 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="admin" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
-    <title>Login</title>
+    <title>Ввійти</title>
     <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <script type="text/javascript" src="js/administration.js"></script>
+    <script type="text/javascript" src="js/registration.js"></script>
 </head>
-<body ng-controller="registration">
-            <h2>Login</h2>
-            <form th:action="@{/login}" method="POST" class="form-signin">
-                    <h3 class="form-signin-heading" th:text="Welcome"></h3>
-                    <br/>
-                    <input type="text" id="login" name="login"  th:placeholder="login"
-                    /> <br/>
-                    <input type="password"  th:placeholder="Password"
-                        id="password" name="password"/> <br />
-                    <button name="Submit" value="Login" type="Submit" th:text="Login"></button>
-            </form>
-            <div>
-               <h2>Registration</h2>
-                <div class="col-md-6 col-md-offset-3">
-                    <input type="text" ng-model="user.login"/>
-                    <input type="password" ng-model="user.password"/>
-                    <button ng-click="registration(user)">Sign In</button>
-                </div>
+<body>
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Exchanger</a>
             </div>
+            <div class="navbar-text navbar-right">
+                <form th:action="@{/registration}" method="get">
+		            <button class="btn btn-lg btn-success" type="Submit">Зареєструватись</button>
+	            </form>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <form autocomplete="off" th:action="@{/login}" method="POST">
+                <input type="text" id="login" name="login"  th:placeholder="Логін" class="form-control" /> <br/>
+                <input type="password"  th:placeholder="Пароль" id="password" name="password" class="form-control" /> <br />
+                <div align="center" th:if="${param.error}">
+                    <p style="font-size: 20; color: #FF1C19;">Логін або пароль не вірні</p>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit" th:text="Ввійти"></button>
+            </form>
+        </div>
+    </div>
+</div>
+<footer class="footer" style="position: absolute; bottom:0;background-color: #f5f5f5; width: 100%">
+    <div ng-app="admin" ng-controller="currentTimeDate" >
+        <b>{{clock  | date:'HH:mm:ss  --  dd/MM/yyyy'}}</b>
+    </div>
+</footer>
 </body>
 </html>

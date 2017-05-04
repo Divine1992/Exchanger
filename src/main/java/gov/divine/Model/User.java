@@ -11,18 +11,24 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private int id;
-    @NotEmpty(message = "Input your login")
+    private long id;
+    @NotEmpty(message = "*Input your login")
     private String login;
-    @Length(min = 5, message = "Min length of password is 5 character")
+    @Length(min = 5, message = "*Min length of password is 5 character")
     private String password;
     private boolean isActive;
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public int getId() {
+    public User() {}
+
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getLogin() {

@@ -1,12 +1,24 @@
 /**
- * Created by Divine on 01.05.2017.
+ * Created by Divine on 04.05.2017.
  */
-angular.module('admin', [])
-    .controller("registration", function ($http, $scope) {
+var app = angular.module("admin", []);
 
-    $scope.registration = function (user) {
+app.controller("registration", function ($window, $scope, $http) {
+    
+    $scope.registerUser = function (user) {
         $http.post("/registration", user)
             .then(function (response) {
-        });
-    };
+               if(response.status == 200){
+                    $window.location.href="/exchanger";
+               }
+            });
+    }
+});
+
+app.controller("currentTimeDate", function ($scope,$interval) {
+     var tick = function() {
+    $scope.clock = Date.now();
+  };
+  tick();
+  $interval(tick, 1000);
 });

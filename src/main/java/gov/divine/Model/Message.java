@@ -8,7 +8,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "message_id")
-    private Long id;
+    private long id;
     private String message;
     private String file;
 
@@ -20,8 +20,12 @@ public class Message {
         this.file = file;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getMessage() {
