@@ -7,19 +7,27 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private long id;
-    @NotEmpty(message = "*Input your login")
+    @NotEmpty(message = "Введіть логін")
     private String login;
-    @Length(min = 5, message = "*Min length of password is 5 character")
+    @NotEmpty(message = "Введіть пароль")
+    @Length(min = 5, message = "Пароль занадто легкий")
     private String password;
-    private boolean isActive;
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+    @NotEmpty(message = "Введіть ім'я")
+    private String name;
+    @NotEmpty(message = "Введіть прізвище")
+    private String surname;
+    @NotEmpty(message = "Виберіть підрозділ")
+    private String subvision;
+    private boolean isActive;
 
     public User() {}
 
@@ -61,5 +69,29 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getSubvision() {
+        return subvision;
+    }
+
+    public void setSubvision(String subvision) {
+        this.subvision = subvision;
     }
 }

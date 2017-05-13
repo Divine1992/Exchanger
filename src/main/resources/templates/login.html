@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Ввійти</title>
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <script type="text/javascript" src="js/registration.js"></script>
+    <script type="text/javascript" src="/js/angular.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/js/registration.js"></script>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Exchanger</a>
+                <a class="navbar-brand" href="/exchanger/login">Exchanger</a>
             </div>
             <div class="navbar-text navbar-right">
-                <form th:action="@{/registration}" method="get">
+                <form th:action="@{/exchanger/registration}" method="get">
 		            <button class="btn btn-lg btn-success" type="Submit">Зареєструватись</button>
 	            </form>
             </div>
@@ -27,7 +27,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-4 col-lg-offset-4">
-            <form autocomplete="off" th:action="@{/login}" method="POST">
+            <form autocomplete="off" th:action="@{/exchanger/login}" method="POST">
                 <input type="text" id="login" name="login"  th:placeholder="Логін" class="form-control" /> <br/>
                 <input type="password"  th:placeholder="Пароль" id="password" name="password" class="form-control" /> <br />
                 <div align="center" th:if="${param.error}">

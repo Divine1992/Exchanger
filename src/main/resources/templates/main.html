@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Exchanger</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/js/angular.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script type="text/javascript" src="/js/main.js"></script>
+</head>
+<body ng-controller="main">
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/exchanger/logout">Exchanger</a>
+            </div>
+            <div class="navbar-text navbar-right">
+                <span style="color:#35386b;font-weight:bold" th:utext="${userName}"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2" >
+        <button class="btn btn-link btn-block" ng-click="allMessages()">Всі повідомлення</button>
+        <button class="btn btn-link btn-block" ng-click="sendMessages()">Вхідні</button>
+        <button class="btn btn-link btn-block" ng-click="receiveMessages()">Вихідні</button>
+        <button class="btn btn-link btn-block" data-target="#sendMessage" data-toggle="modal">Вдправити повідомлення</button>
+    </div>
+    <div class="col-sm-8" >
+         <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Date</th>
+                    <th>Message</th>
+                    <th>File</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="mes in messages">
+                    <td>{{mes.fromLogin}}</td>
+                    <td>{{mes.toLogin}}</td>
+                    <td>{{mes.sendDate | date:'dd/MM/yyyy -- HH:mm:ss'}}</td>
+                    <td>{{mes.message}}</td>
+                    <td>{{mes.file}}</td>
+                </tr>
+            </tbody>
+         </table>
+    </div>
+    <div class="col-sm-2" style="background-color:lavender;">.col-sm-4</div>
+  </div>
+</div>
+<footer class="footer" style="position: absolute; bottom:0;background-color: #f5f5f5; width: 100%">
+    <div ng-controller="currentTimeDate" >
+        <b>{{clock  | date:'HH:mm:ss  --  dd/MM/yyyy'}}</b>
+    </div>
+</footer>
+<!-- Modal save Hotel-->
+            <div class="modal fade" id="sendMessage" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4> New Message </h4>
+                        </div>
+                        <form name="sendMessage">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" ng-required="true" name="login" ng-model="mes.toLogin"  class="form-control" placeholder="Одержувач" />
+                                    <span class="help-block" ng-show="sendMessage.login.$invalid" style="font-size: 20; color: #FF1C19;">
+                                        Введіть адресу отримувача
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <input ng-model="mes.message" type="text" class="form-control" placeholder="Текст повідомлення" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="file" file-model="fileName" class="file"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button ng-disabled="!sendMessage.$valid" ng-click="send(mes, fileName)"  data-dismiss="modal" type="button" class="btn btn-primary">Відправити</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+</body>
+</html>

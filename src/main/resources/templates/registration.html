@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Реєстрація</title>
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <script type="text/javascript" src="js/registration.js"></script>
+    <script type="text/javascript" src="/js/angular.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-3.2.0.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/js/registration.js"></script>
 </head>
-<body ng-app="admin" ng-controller="registration">
+<body>
 <header>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Exchanger</a>
+                <a class="navbar-brand" href="/exchanger/login">Exchanger</a>
             </div>
 
         </div>
@@ -23,12 +23,42 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-4 col-lg-offset-4">
+            <form autocomplete="off" th:action="@{/exchanger/registration}" method="post" th:object="${user}">
+                <input  th:field="*{login}" type="text" id="login" name="login"  placeholder="Логін" class="form-control" />
+                <div align="center" th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="font-size: 20; color: #FF1C19;" /> <br/>
+                <input  th:field="*{password}" type="password"  placeholder="Пароль" id="password" name="password" class="form-control" />
+                <div align="center" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="font-size: 20; color: #FF1C19;" /> <br />
+                <input  th:field="*{name}" type="text"  placeholder="Ім'я" id="name" name="name" class="form-control" />
+                <div align="center" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="font-size: 20; color: #FF1C19;"/> <br />
+                <input  th:field="*{surname}" type="text"  placeholder="Прізвище" id="surname" name="surname" class="form-control" />
+                <div align="center" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" style="font-size: 20; color: #FF1C19;"/> <br />
+                <select th:field="*{subvision}" name="subvision" class="form-control" placeholder="Підрозділ">S
+                    <option value=""> </option>
+                    <option value="ВА">ВА</option>
+                    <option value="ВАРВ">ВАРВ</option>
+                    <option value="ЗагінРР">ЗагінРР</option>
+                    <option value="КП">КП</option>
+                </select>
+                <div align="center" th:if="${#fields.hasErrors('subvision')}" th:errors="*{subvision}" style="font-size: 20; color: #FF1C19;"/> <br />
+                <button type="submit" class="btn btn-lg btn-success btn-block">Зареєструвати</button>
+                <span th:utext="${successMessage}"></span>
+            </form>
+        </div>
+        <!--<div class="col-lg-4 col-lg-offset-4">
             <form autocomplete="off">
                 <input ng-model="user.login" type="text" id="login" name="login"  placeholder="Логін" class="form-control" /> <br/>
                 <input ng-model="user.password" type="password"  placeholder="Пароль" id="password" name="password" class="form-control" /> <br />
+                <input ng-model="user.name" type="text"  placeholder="Ім'я" id="name" name="name" class="form-control" /> <br />
+                <input ng-model="user.surname" type="text"  placeholder="Прізвище" id="surname" name="surname" class="form-control" /> <br />
+                <select name="subvision" ng-model="user.subvision" class="form-control" placeholder="Підрозділ">
+                    <option value="ВА">ВА</option>
+                    <option value="ВАРВ">ВАРВ</option>
+                    <option value="ЗагінРР">ЗагінРР</option>
+                    <option value="КП">КП</option>
+                </select> <br />
                 <button class="btn btn-lg btn-success btn-block" ng-click="registerUser(user)">Зареєструвати</button>
             </form>
-        </div>
+        </div>-->
     </div>
 </div>
 <footer class="footer" style="position: absolute; bottom:0;background-color: #f5f5f5; width: 100%">

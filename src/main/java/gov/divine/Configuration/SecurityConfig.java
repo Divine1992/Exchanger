@@ -1,6 +1,7 @@
 package gov.divine.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -8,8 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -30,41 +34,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-    		/*http
-					.authorizeRequests()
-						.antMatchers("/").permitAll()
-						.anyRequest().authenticated()
-						.and()
-					.formLogin()
-						.loginPage("/login")
-						.permitAll()
-						.and()
-					.logout()
-						.permitAll();*/
-    		/*http
-                .authorizeRequests()
-                    .antMatchers("/resources*//**", "/registration").permitAll()
-                    .anyRequest().authenticated().and().csrf().disable()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                    .and()
-                .logout()
-                    .permitAll();*/
-
 		http.
 			authorizeRequests()
-				.antMatchers("/", "/login", "/registration").permitAll()
-				.antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
-				.authenticated().and().csrf().disable().formLogin()
-				.loginPage("/login").failureUrl("/login?error=true")
-				.defaultSuccessUrl("/exchanger")
-				.usernameParameter("login")
-				.passwordParameter("password")
+				.antMatchers("/exchanger", "/exchanger/login", "/exchanger/registration").permitAll()
+				.anyRequest().authenticated().and().csrf().disable()
+				.formLogin()
+					.loginPage("/exchanger/login").failureUrl("/exchanger/login?error=true")
+					.defaultSuccessUrl("/exchanger/main", true)
+					.usernameParameter("login")
+					.passwordParameter("password")
 				.and().logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/").and().exceptionHandling()
-				.accessDeniedPage("/access-denied");
+					.logoutRequestMatcher(new AntPathRequestMatcher("/exchanger/logout"))
+					.logoutSuccessUrl("/exchanger/login")
+				.and().sessionManagement()
+					.maximumSessions(1)
+					.maxSessionsPreventsLogin(false)
+					.expiredUrl("/exchanger/login")
+					.sessionRegistry(sessionRegistry());
 	}
 
 	@Override
@@ -78,6 +64,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		return bCryptPasswordEncoder;
+	}
+
+	@Bean
+	public SessionRegistry sessionRegistry(){
+    	return new SessionRegistryImpl();
+	}
+
+	@Bean
+	public ServletListenerRegistrationBean httpSessionEventPublisher() {
+	    return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
 	}
 
 }

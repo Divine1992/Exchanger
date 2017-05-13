@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"gov.divine"})
-@EntityScan(basePackages = {"gov.divine"})
+//@EnableJpaRepositories(basePackages = {"gov.divine.Repository"})
+//@EntityScan(basePackages = {"gov.divine"})
 @ComponentScan(basePackages = {"gov.divine"})
 public class ExchangerApplication {
 

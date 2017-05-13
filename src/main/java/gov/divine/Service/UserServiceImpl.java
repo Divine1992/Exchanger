@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -27,6 +31,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private RoleRepository roleRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private SessionRegistry sessionRegistry;
 
     @Override
     public User findUserByLogin(String login) {
@@ -36,8 +42,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
 	public void saveUser(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		Role userRole = roleRepository.findByRole("USER");
 		user.setActive(true);
-		Role userRole = roleRepository.findByRole("ADMIN");
 		user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
 		userRepository.save(user);
 	}
@@ -62,5 +68,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
 		return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), user.isActive(), true, true, true, authorities);
+	}
+
+	@Override
+	public List<String> getActiveUsers(){
+		List<String> users = new ArrayList<>();
+		UserDetails ud;
+		UserServiceImpl us = new UserServiceImpl();
+		for (Object object: sessionRegistry.getAllPrincipals()){
+			ud = (UserDetails) object;
+			User user = findUserByLogin(ud.getUsername());
+			users.add(user.getName()+" "+user.getSurname()+" "+user.getSubvision());
+		}
+		return users;
 	}
 }
