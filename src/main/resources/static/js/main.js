@@ -14,7 +14,7 @@ var app = angular.module("app", [])
     };
 }]), oldFile, allData, position;
 
-app.controller("main", function ($scope, $http, $interval) {
+app.controller("main", function ($scope, $http, $interval, $window) {
     $scope.file = null;
     $http.get("/exchanger/main/getAllUsers").then(function (response) {
             $scope.allUsers = response.data;
@@ -90,6 +90,14 @@ app.controller("main", function ($scope, $http, $interval) {
                 $scope.msgStatus = "Файл занадто великий";
              });
         }
+     };
+     
+     $scope.downloadFile = function (fileName) {
+        $http.get("/exchanger/main/download/"+fileName).then(function (response) {
+            if (response.status == 200){
+                $window.location.href = "/exchanger/main/download/"+fileName;
+            }
+        });
      };
 
      $scope.clearSendMenu = function () {
