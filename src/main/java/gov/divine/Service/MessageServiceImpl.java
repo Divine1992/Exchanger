@@ -1,6 +1,5 @@
 package gov.divine.Service;
 
-import gov.divine.Controller.FileUploadController;
 import gov.divine.Model.Message;
 import gov.divine.Model.User;
 import gov.divine.Repository.MessageRepository;
@@ -10,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,21 +23,36 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private UserService userService;
 
-    public void save(Message message){
+    public boolean save(Message message){
+        if (message.getFile()== null && message.getMessage() == null){
+            return false;
+        }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByLogin(auth.getName());
         String userName = user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")";
         message.setSendDate(new Date());
         message.setFromLogin(userName);
         messageRepository.save(message);
+        return true;
     }
 
     @Override
-    public List<Message> findByFromLoginOrToLogin() {
+    public List<List<Message>> findByFromLoginOrToLogin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByLogin(auth.getName());
         String userName = user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")";
-        return messageRepository.findByFromLoginOrToLogin(userName, userName);
+        List<Message> messages = messageRepository.findByFromLoginOrToLoginOrderBySendDateDesc(userName, userName);
+        List<List<Message>> resultList = new ArrayList<>();
+        List<Message> list = new ArrayList<>(18);
+        for (int i = 0; i < messages.size(); i++){
+            list.add(messages.get(i));
+            if (list.size() == 18 || i == messages.size()-1){
+                List<Message> setList = new ArrayList<>(list);
+                resultList.add(setList);
+                list.clear();
+            }
+        }
+        return resultList;
     }
 
     @Override
@@ -45,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByLogin(auth.getName());
         String userName = user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")";
-        return messageRepository.findByFromLogin(userName);
+        return messageRepository.findByFromLoginOrderBySendDateDesc(userName);
     }
 
     @Override
@@ -53,6 +68,6 @@ public class MessageServiceImpl implements MessageService {
        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
        User user = userService.findUserByLogin(auth.getName());
        String userName = user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")";
-       return messageRepository.findByToLogin(userName);
+       return messageRepository.findByToLoginOrderBySendDateDesc(userName);
     }
 }

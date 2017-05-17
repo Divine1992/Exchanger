@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" ng-app="app">
+<html lang="en" ng-app="app" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Exchanger</title>
@@ -27,38 +27,52 @@
   <div class="row">
     <div class="col-sm-2" >
         <button class="btn btn-link btn-block" ng-click="allMessages()">Всі повідомлення</button>
-        <button class="btn btn-link btn-block" ng-click="sendMessages()">Вхідні</button>
-        <button class="btn btn-link btn-block" ng-click="receiveMessages()">Вихідні</button>
-        <button class="btn btn-link btn-block" data-target="#sendMessage" data-toggle="modal">Вдправити повідомлення</button>
+        <button class="btn btn-link btn-block" ng-click="sendMessages()">Вихідні</button>
+        <button class="btn btn-link btn-block" ng-click="receiveMessages()">Вхідні</button>
+        <button class="btn btn-link btn-block" ng-click ="clearSendMenu()" data-target="#sendMessage" data-toggle="modal" id="sendId">Вдправити повідомлення</button>
     </div>
     <div class="col-sm-8" >
-         <table class="table table-bordered table-striped">
+         <table class="table table-bordered table-striped" >
+             <tr ng-repeat-start="mes in messages">
+                 <td>{{mes.sendDate | date:'dd/MM/yyyy -- HH:mm:ss'}}</td>
+                 <td>{{mes.message}}</td>
+                 <!--<td><a target="_blank" href="{{mes.file}}">{{mes.file}}</a></td> -->
+                 <td><img src="{{mes.file}}" />{{mes.file}}</td>
+                 <td ng-click="showDetails = !showDetails">деталі</td>
+             </tr>
+             <tr ng-repeat-end="mes in messages" ng-show="showDetails">
+                 <td>{{mes.fromLogin}}</td>
+                 <td>{{mes.toLogin}}</td>
+             </tr>
+         </table>
+    </div>
+    <div class="col-sm-2" style="background-color:lavender;">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Date</th>
-                    <th>Message</th>
-                    <th>File</th>
+                    <th>Користувачі в мережі</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="mes in messages">
-                    <td>{{mes.fromLogin}}</td>
-                    <td>{{mes.toLogin}}</td>
-                    <td>{{mes.sendDate | date:'dd/MM/yyyy -- HH:mm:ss'}}</td>
-                    <td>{{mes.message}}</td>
-                    <td>{{mes.file}}</td>
+                <tr ng-repeat="activeUser in activeUsers">
+                    <td>{{activeUser}}</td>
                 </tr>
             </tbody>
          </table>
     </div>
-    <div class="col-sm-2" style="background-color:lavender;">.col-sm-4</div>
   </div>
 </div>
-<footer class="footer" style="position: absolute; bottom:0;background-color: #f5f5f5; width: 100%">
-    <div ng-controller="currentTimeDate" >
-        <b>{{clock  | date:'HH:mm:ss  --  dd/MM/yyyy'}}</b>
+<footer class="footer" style="position: absolute; bottom:0;background-color: #e9ffe5; width: 100%">
+    <div ng-controller="currentTimeDate" class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <b>{{clock  | date:'HH:mm:ss  --  dd/MM/yyyy'}}</b>
+            </div>
+            <div class="col-md-7">
+                <button ng-click="goForward()" class="btn btn-link  btn-md">Вперед</button>
+                <button ng-click="goBack()" class="btn btn-link  btn-md">Назад</button>
+            </div>
+        </div>
     </div>
 </footer>
 <!-- Modal save Hotel-->
@@ -67,25 +81,31 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4> New Message </h4>
+                            <h4> Нове повідомлення </h4>
                         </div>
                         <form name="sendMessage">
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input type="text" ng-required="true" name="login" ng-model="mes.toLogin"  class="form-control" placeholder="Одержувач" />
-                                    <span class="help-block" ng-show="sendMessage.login.$invalid" style="font-size: 20; color: #FF1C19;">
+                                    <select ng-required="true" name = "address" class="form-control" ng-model="mes.toLogin">
+                                        <option value=""></option>
+                                        <option ng-repeat="user in allUsers" value="{{user}}">{{user}}</option>
+                                    </select>
+                                    <span class="help-block" ng-show="sendMessage.address.$invalid" style="font-size: 20; color: #FF1C19;">
                                         Введіть адресу отримувача
                                     </span>
                                 </div>
-                                <div class="form-group">
-                                    <input ng-model="mes.message" type="text" class="form-control" placeholder="Текст повідомлення" />
+                                <div>
+                                    <textarea rows="4" cols="50" ng-model="mes.message" class="form-control" placeholder="Текст повідомлення"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <input type="file" file-model="fileName" class="file"/>
+                                    <input name="uploadFile" id="uploadFileId" type="file" file-model="fileName" class="file" value="Прикріпити файл"/>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button ng-disabled="!sendMessage.$valid" ng-click="send(mes, fileName)"  data-dismiss="modal" type="button" class="btn btn-primary">Відправити</button>
+                                <span style="font-size: 20; color: #ff171a;" ng-show="msgStatus">
+                                    {{msgStatus}}
+                                </span>
+                                <button ng-disabled="sendMessage.address.$invalid" ng-click="send(mes, fileName)" type="submit" class="btn btn-primary">Відправити</button>
                             </div>
                         </form>
                     </div>

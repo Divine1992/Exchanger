@@ -11,10 +11,10 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
     //@Query("select m from Message m where m.fromLogin = ?1 or m.toLogin = ?1")
-    List<Message> findByFromLoginOrToLogin(String userNameFrom, String userNameTo);
+    List<Message> findByFromLoginOrToLoginOrderBySendDateDesc(String userNameFrom, String userNameTo);
 
-    List<Message> findByFromLogin(String userName);
+    List<Message> findByFromLoginOrderBySendDateDesc(String userName);
 
-    List<Message> findByToLogin (String userName);
+    List<Message> findByToLoginOrderBySendDateDesc(String userName);
 
 }

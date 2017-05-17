@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 
 @RestController
-@Scope("session")
+@Scope("singleton")
 @RequestMapping("/exchanger")
 public class AdminController {
 
@@ -30,7 +30,7 @@ public class AdminController {
 		User expectedUser = userService.findUserByLogin(user.getLogin());
 		if (expectedUser != null) {
 			bindingResult
-					.rejectValue("login", "error.user",
+					.rejectValue("login", "error.login",
 							"Користувач з таким логіном вже існує");
 		}
 		if (bindingResult.hasErrors()) {
@@ -51,7 +51,6 @@ public class AdminController {
 		User user = userService.findUserByLogin(auth.getName());
         model.addObject("userName", user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")");
         model.setViewName("main");
-        System.out.println(userService.getActiveUsers());
         return model;
     }
 
@@ -71,4 +70,10 @@ public class AdminController {
         return model;
     }
 
+    @GetMapping("/error")
+    public ModelAndView errorPage(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("error");
+        return model;
+    }
 }

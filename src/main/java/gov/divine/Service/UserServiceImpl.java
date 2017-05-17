@@ -6,8 +6,10 @@ import gov.divine.Repository.RoleRepository;
 import gov.divine.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -72,14 +74,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public List<String> getActiveUsers(){
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = findUserByLogin(auth.getName());
 		List<String> users = new ArrayList<>();
-		UserDetails ud;
+		UserDetails userDetails;
 		UserServiceImpl us = new UserServiceImpl();
 		for (Object object: sessionRegistry.getAllPrincipals()){
-			ud = (UserDetails) object;
-			User user = findUserByLogin(ud.getUsername());
-			users.add(user.getName()+" "+user.getSurname()+" "+user.getSubvision());
+			userDetails = (UserDetails) object;
+			User user = findUserByLogin(userDetails.getUsername());
+			if(currentUser.getId() != user.getId()){
+				users.add(user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")");
+			}
 		}
 		return users;
+	}
+
+	@Override
+	public List<String> getAllUsers() {
+		List<User> users = userRepository.findAll();
+		List<String> usersName = new ArrayList<>();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = findUserByLogin(auth.getName());
+		for(User user : users){
+			if (currentUser.getId() != user.getId()){
+				usersName.add(user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")");
+			}
+		}
+		return usersName;
 	}
 }
