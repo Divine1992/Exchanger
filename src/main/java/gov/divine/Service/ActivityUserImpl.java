@@ -1,0 +1,83 @@
+package gov.divine.Service;
+
+import gov.divine.Model.User;
+import gov.divine.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Service("activityUserImpl")
+@Scope("request")
+public class ActivityUserImpl implements ActivityUser {
+    private User currentUser;
+
+    @Autowired
+    @Qualifier("userRepository")
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SessionRegistry sessionRegistry;
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll().stream()
+                .filter(i -> !i.equals(getCurrentUser()))
+                .sorted(Comparator.comparing(User::getSubvision)
+                .thenComparing(User::getSurname)
+                .thenComparing(User::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getActiveUsers() {
+        return sessionRegistry.getAllPrincipals().stream()
+                .map(UserDetails.class::cast)
+                .map(UserDetails::getUsername)
+                .filter(i -> !i.equals(getCurrentUser().getLogin()))
+                .map(j -> userRepository.findByLogin(j))
+                .sorted(Comparator.comparing(User::getSubvision)
+                .thenComparing(User::getSurname)
+                .thenComparing(User::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<User> getSubscribers() {
+        return getCurrentUser().getSubscribers().stream()
+                .sorted(Comparator.comparing(User::getSubvision)
+                .thenComparing(User::getSurname)
+                .thenComparing(User::getName))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void subscribe(User user) {
+        User currentUser = getCurrentUser();
+        if (currentUser.getSubscribers().add(user)){
+            // update currentUser
+        }
+    }
+
+    private User getCurrentUser(){
+        if (currentUser == null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            currentUser = userRepository.findByLogin(auth.getName());
+        }
+        return currentUser;
+    }
+
+}

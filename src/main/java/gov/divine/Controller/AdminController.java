@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 
 @RestController
-@Scope("singleton")
+@Scope("session")
 @RequestMapping("/exchanger")
 public class AdminController {
 
@@ -26,7 +26,7 @@ public class AdminController {
 
     @PostMapping("/registration")
     public ModelAndView registrerUser(@Valid User user, BindingResult bindingResult){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("registration");
 		User expectedUser = userService.findUserByLogin(user.getLogin());
 		if (expectedUser != null) {
 			bindingResult
@@ -39,18 +39,17 @@ public class AdminController {
 			userService.saveUser(user);
 			modelAndView.addObject("successMessage", "Користувач успішно зареєстровано");
 			modelAndView.addObject("user", new User());
-			modelAndView.setViewName("registration");
 		}
 		return modelAndView;
     }
 
     @GetMapping("/main")
     public ModelAndView exchangerPage(){
-        ModelAndView model = new ModelAndView();
+        ModelAndView model = new ModelAndView("main");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByLogin(auth.getName());
-        model.addObject("userName", user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")");
-        model.setViewName("main");
+        model.addObject("userName", user.getSubvision() + " - (" + user.getSurname() + " " + user.getName()+")");
+        model.addObject("currentUserId", user.getId());
         return model;
     }
 

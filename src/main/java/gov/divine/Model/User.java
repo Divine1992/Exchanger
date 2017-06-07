@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -27,9 +29,26 @@ public class User {
     private String surname;
     @NotEmpty(message = "Виберіть підрозділ")
     private String subvision;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
+    private Set<User> subscribers;
     private boolean isActive;
 
     public User() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof User)) return false;
+
+        User user = (User) o;
+        return user.getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, login, password, roles, name, surname, subvision, subscribers, isActive);
+    }
 
     public long getId() {
         return id;
@@ -94,4 +113,13 @@ public class User {
     public void setSubvision(String subvision) {
         this.subvision = subvision;
     }
+
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
+    }
+
 }

@@ -1,0 +1,19 @@
+table { /* скрол бокс в таблице*/
+   overflow-y:scroll;
+   height:85vh;
+   display:block;
+   table-layout: fixed;
+   width: 100%;
+}
+
+textarea {
+    resize: vertical; /* разрешает изминения размера по вертикале */
+    overflow-y:scroll;
+}
+
+/*tbody tr:hover {
+    background: #9cccb3;
+    color: #0c0c0c;
+}*/
+
+.pointer {cursor: pointer;}

@@ -28,8 +28,8 @@
     <div class="row">
         <div class="col-lg-4 col-lg-offset-4">
             <form autocomplete="off" th:action="@{/exchanger/login}" method="POST">
-                <input type="text" id="login" name="login"  th:placeholder="Логін" class="form-control" /> <br/>
-                <input type="password"  th:placeholder="Пароль" id="password" name="password" class="form-control" /> <br />
+                <input type="text" maxlength="254" id="login" name="login"  th:placeholder="Логін" class="form-control" /> <br/>
+                <input type="password"  maxlength="254" th:placeholder="Пароль" id="password" name="password" class="form-control" /> <br />
                 <div align="center" th:if="${param.error}">
                     <p style="font-size: 20; color: #FF1C19;">Логін або пароль не вірні</p>
                 </div>
