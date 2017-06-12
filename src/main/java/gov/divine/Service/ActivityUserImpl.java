@@ -11,10 +11,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("activityUserImpl")
@@ -65,10 +62,27 @@ public class ActivityUserImpl implements ActivityUser {
     }
 
     @Override
-    public void subscribe(User user) {
+    public void subscribeOn(User user) {
         User currentUser = getCurrentUser();
         if (currentUser.getSubscribers().add(user)){
-            // update currentUser
+            userRepository.save(currentUser);
+        }
+    }
+
+    @Override
+    public void subscribeOff(User user) {
+        User currentUser = getCurrentUser();
+        if (currentUser.getSubscribers().remove(user)){
+            userRepository.save(currentUser);
+        }
+    }
+
+    @Override
+    public Map<String, Boolean> isSubscriber(Long id) {
+        Optional<User> optional = getCurrentUser().getSubscribers().stream().filter(i -> i.getId() == id).findFirst();
+        if (optional.isPresent()) return Collections.singletonMap("isSubscriber", true);
+        else {
+          return Collections.singletonMap("isSubscriber", false);
         }
     }
 

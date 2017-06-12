@@ -29,7 +29,7 @@ public class User {
     private String surname;
     @NotEmpty(message = "Виберіть підрозділ")
     private String subvision;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
     private Set<User> subscribers;
     private boolean isActive;
@@ -47,7 +47,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, roles, name, surname, subvision, subscribers, isActive);
+        return Objects.hash(id);
     }
 
     public long getId() {

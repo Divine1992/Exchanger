@@ -26,7 +26,14 @@ public class InformationController {
     }
 
     @GetMapping("/{senderUserId}/getMyInformations")
+    @ResponseBody
     public List<List<Information>> getMyInfo(@PathVariable String senderUserId){
         return informationService.getMyInfo(Long.valueOf(senderUserId));
+    }
+
+    @GetMapping("/getSubscribersInfo")
+    @ResponseBody
+    public List<List<Information>> getSubscribersInfo(){
+        return informationService.getSubscribersInfo();
     }
 }

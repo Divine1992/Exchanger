@@ -30,7 +30,8 @@
     <div class="col-sm-2" >
         <button class="btn btn-link btn-block" ng-click="getReceiveMessages()">Одержані повідомлення</button>
         <button class="btn btn-link btn-block" ng-click="getSendMessages()">Відправлені повідомлення</button>
-        <button class="btn btn-link btn-block" ng-click="getMyInfo()">Мої дані</button>
+        <button class="btn btn-link btn-block" ng-click="getMyInfo()">Мої опубліковані дані</button>
+        <button class="btn btn-link btn-block" ng-click="getAllInfo()">Новини</button>
         <button class="btn btn-link btn-block" ng-click="clearPostMenu()" data-target="#postInformation" data-toggle="modal">Додати інформацію</button>
     </div>
     <div class="col-md-8">
@@ -65,10 +66,10 @@
                 <tr>
                     <th>
                         <div class="form-group">
-                            <select class="form-control">
-                                <option ng-click="getAllUsers()">Всі користувачі</option>
-                                <option ng-click="getInterestingUsers()">Цікаві нам користувачі</option>
-                                <option ng-click="getActiveUsers()">Користувачі в мережі</option>
+                            <select ng-model="optionsValue" class="form-control" ng-change="getUsers(optionsValue)">
+                                <option value="1" selected="selected">Всі користувачі</option>
+                                <option value="2">Цікаві нам</option>
+                                <option value="3">В мережі</option>
                             </select>
                         </div>
                     </th>
@@ -106,8 +107,11 @@
                         </div>
                         <div class="modal-body">
                             <form role="form">
-                                <div class="form-group">
-                                    <button class="btn btn-info form-control" ng-click="subscribe(user)">Підписатись</button>
+                                <div class="form-group" ng-show="!isSubscriber">
+                                    <button class="btn btn-info form-control" ng-click="subscribeOn(user)">Підписатись</button>
+                                </div>
+                                <div class="form-group" ng-show="isSubscriber">
+                                    <button class="btn btn-info form-control" ng-click="subscribeOff(user)">Більше не цікавитись</button>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-success form-control" ng-click="clearSendMenu()" data-target="#sendMessage" data-toggle="modal" data-dismiss="modal">Відправити особисте повідомлення</button>

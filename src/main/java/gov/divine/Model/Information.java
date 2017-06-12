@@ -2,6 +2,7 @@ package gov.divine.Model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Information {
@@ -18,6 +19,20 @@ public class Information {
     private Date sendDate = new Date();
 
     public Information() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Information)) return false;
+
+        Information info = (Information) o;
+        return info.getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public long getId() {

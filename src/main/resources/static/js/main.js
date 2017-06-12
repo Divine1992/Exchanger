@@ -15,7 +15,7 @@ var app = angular.module("app", [])
 }]), oldFile, allData;
 
 app.controller("main", function ($scope, $http, $interval, $window) {
-    //$scope.senderUserId = null;
+    $scope.optionsValue = 1;
     $http.get("/exchanger/main/getAllUsers").then(function (response) {
         $scope.users = response.data;
     });
@@ -40,34 +40,33 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
     tick();
     $interval(tick, 10000);*/
-   
-   $scope.getAllUsers = function () {
-      $http.get("/exchanger/main/getAllUsers").then(function (response) {
-        $scope.users = response.data;
-    });
-   };
-   
-   $scope.getActiveUsers = function () {
-       console.log('get active users');
-     $http.get("/exchanger/main/getActiveUsers").then(function (response) {
-         $scope.users = response.data;
-     })
-   };
 
-   $scope.getInterestingUsers = function (response) {
-     $http.get("/exchanger/main/getSubscribers").then(function (response) {
-        $scope.users = response.data;
-     });
-   };
-
-   $scope.fillUser = function (user) {
-     $scope.user = user;
-   };
-
-    $scope.subscribe = function (user) {
-        $http.post("/exchanger/main/subscribe", user).then(function (response) {
-            console.log(user);
+    $scope.fillUser = function (user) {
+        $scope.user = user;
+        $http.get("/exchanger/main/isSubscriber/"+user.id).then(function (response) {
+            $scope.isSubscriber = response.data.isSubscriber;
         });
+    };
+   
+    $scope.getUsers = function (optionsValue) {
+      if(optionsValue == 1) {
+          $http.get("/exchanger/main/getAllUsers").then(function (response) {
+              $scope.users = response.data;});
+      } else if (optionsValue == 2){
+          $http.get("/exchanger/main/getSubscribers").then(function (response) {
+          $scope.users = response.data;});
+      } else {
+          $http.get("/exchanger/main/getActiveUsers").then(function (response) {
+          $scope.users = response.data;});
+      }
+   };
+
+    $scope.subscribeOn = function (user) {
+        $http.post("/exchanger/main/subscribeOn", user);
+    };
+
+    $scope.subscribeOff = function (user) {
+        $http.post("/exchanger/main/subscribeOff", user);
     };
 
     $scope.goForward = function () {
@@ -162,6 +161,15 @@ app.controller("main", function ($scope, $http, $interval, $window) {
          $scope.position = 0;
          $scope.informations = allData[$scope.position];
       });
+    };
+
+    $scope.getAllInfo = function () {
+       $http.get("/exchanger/main//getSubscribersInfo").then(function (response) {
+         $scope.showMessages = false;
+         allData = response.data;
+         $scope.position = 0;
+         $scope.informations = allData[$scope.position];
+       });
     };
 
     $scope.sendMessage = function (message, fileName) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -33,9 +34,20 @@ public class UserController {
         return activityUser.getSubscribers();
     }
 
-    @PostMapping("/subscribe")
-    public void subscibe(@RequestBody @Valid User user){
-        activityUser.subscribe(user);
+    @PostMapping("/subscribeOn")
+    public void subscibeOn(@RequestBody @Valid User user){
+        activityUser.subscribeOn(user);
+    }
+
+    @PostMapping("/subscribeOff")
+    public void subscibeOff(@RequestBody @Valid User user){
+        activityUser.subscribeOff(user);
+    }
+
+    @GetMapping("/isSubscriber/{id}")
+    @ResponseBody
+    public Map<String, Boolean> isSubscriber(@PathVariable("id") Long id){
+        return activityUser.isSubscriber(id);
     }
 
 }

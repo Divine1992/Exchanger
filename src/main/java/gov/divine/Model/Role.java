@@ -1,6 +1,7 @@
 package gov.divine.Model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Role {
@@ -27,5 +28,20 @@ public class Role {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Role)) return false;
+
+        Role role1 = (Role) o;
+
+        return role1.getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
