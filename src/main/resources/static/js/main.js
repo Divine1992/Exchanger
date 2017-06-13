@@ -227,7 +227,6 @@ app.controller("main", function ($scope, $http, $interval, $window) {
          elem = document.querySelector('#infoTheme');
          angular.element(elem).val(null);
     };
-
 });
 
 app.controller("currentTimeDate", function ($scope,$interval) {
