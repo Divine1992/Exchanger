@@ -1,10 +1,11 @@
 package gov.divine.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,16 +23,17 @@ public class User {
     private String password;
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
     @NotEmpty(message = "Введіть ім'я")
     private String name;
     @NotEmpty(message = "Введіть прізвище")
     private String surname;
     @NotEmpty(message = "Виберіть підрозділ")
     private String subvision;
-    @OneToMany
+    @ManyToMany
+    @JsonIgnore
     @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private Set<User> subscribers;
+    private Set<User> subscribers = new HashSet<>();
     private boolean isActive;
 
     public User() {}

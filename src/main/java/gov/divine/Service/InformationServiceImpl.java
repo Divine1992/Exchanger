@@ -48,9 +48,8 @@ public class InformationServiceImpl implements InformationService{
     public List<List<Information>> getSubscribersInfo() {
         User currentUser = getCurrentUser();
         List<Information> allSubscribersInfo = new LinkedList<>();
-        currentUser.getSubscribers().stream().forEach(i ->{
-            informationRepository.findByUserId(i.getId()).forEach(k -> allSubscribersInfo.add(k));
-        });
+        currentUser.getSubscribers().stream().forEach(i -> informationRepository.findByUserId(i.getId()).forEach(k -> allSubscribersInfo.add(k)));
+        allSubscribersInfo.sort(Comparator.comparing(Information::getSendDate).reversed());
         return separateList(allSubscribersInfo);
     }
 

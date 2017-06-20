@@ -9,7 +9,7 @@ import java.util.Set;
 public interface ActivityUser {
     List<User> getAllUsers();
     List<User> getActiveUsers();
-    Set<User> getSubscribers();
+    List<User> getSubscribers();
     void subscribeOn(User user);
     void subscribeOff(User user);
     Map<String, Boolean> isSubscriber(Long id);

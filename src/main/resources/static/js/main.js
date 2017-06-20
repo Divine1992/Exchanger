@@ -20,27 +20,6 @@ app.controller("main", function ($scope, $http, $interval, $window) {
         $scope.users = response.data;
     });
 
-    /*$http.get("/exchanger/main/receiveMessages").then(function (response) {
-            allData = response.data;
-            position = 0;
-            $scope.messages = allData[position];
-            $scope.isReceiveMessage = true;
-    });
-
-    $http.get("/exchanger/main/getActiveUsers").then(function (response) {
-        console.log(response.data);
-    });*/
-
-    // Spin getAllActiveUsers
-
-   /* var tick = function() {
-         $http.get("/exchanger/main/getActiveUsers").then(function (response) {
-             $scope.activeUsers = response.data;
-         });
-    };
-    tick();
-    $interval(tick, 10000);*/
-
     $scope.fillUser = function (user) {
         $scope.user = user;
         $http.get("/exchanger/main/isSubscriber/"+user.id).then(function (response) {
@@ -74,6 +53,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             if($scope.position < allData.length-1){
                 $scope.position = $scope.position + 1;
                 $scope.messages = allData[$scope.position];
+                $scope.informations = allData[$scope.position];
             }
         }
     };
@@ -83,6 +63,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             if($scope.position != 0) {
                 $scope.position = $scope.position - 1;
                 $scope.messages = allData[$scope.position];
+                $scope.informations = allData[$scope.position];
             }
         }
     };
@@ -107,20 +88,6 @@ app.controller("main", function ($scope, $http, $interval, $window) {
         });
     };
 
-    $scope.downloadFile = function (message) {
-        $http.post("/exchanger/main/downloadMessage", message).then(function (response) {
-            if (response.status == 200){
-                console.log(response.status);
-                //$window.location.href = "/exchanger/main/download/"+message.file;
-            }
-        });
-        /*$http.get("/exchanger/main/download/"+message).then(function (response) {
-            if (response.status == 200){
-                $window.location.href = "/exchanger/main/download/"+message.file;
-            }
-        });*/
-    };
-
     $scope.postInfo = function (information, fileName) {
         if (information != null){
             information.userId = $scope.senderUserId;
@@ -130,27 +97,26 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/exchanger/main/upload", fd, {
+            $http.post("/exchanger/main/uploadFile", fd, {
                 transformRequest: angular.identity,
-                headers: {'Content-Type':  undefined},
-                params:{
-                    'fileType':"Informations"
-                }
+                headers: {'Content-Type':  undefined}
             }).then(function (response) {
-                information.file = response.data;
+                information.file = response.data.file;
                 $http.post("/exchanger/main/postInformation",information).then(function (response) {
-                    $scope.statusPostInformation = response.data;
+                    $scope.isAlertShow = response.data;
+                    $scope.isSuccess = response.data.isSuccess;
+                    $scope.body = response.data.body;
                 });
             }).catch(function () {
                 $scope.statusPostInformation = 'Помилка додавання інформації';
             });
             } else {
                 $http.post("/exchanger/main/postInformation",information).then(function (response) {
-                    $scope.statusPostInformation = response.data;
+                    $scope.isAlertShow = response.data;
+                    $scope.isSuccess = response.data.isSuccess;
+                    $scope.body = response.data.body;
                 });
             }
-        } else {
-            $scope.statusPostInformation = "Тема повинна бути обов'язково";
         }
     };
     
@@ -184,16 +150,15 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/exchanger/main/upload", fd, {
+            $http.post("/exchanger/main/uploadFile", fd, {
                 transformRequest: angular.identity,
-                headers: {'Content-Type':  undefined},
-                params:{
-                    'fileType':"Messages"
-                }
+                headers: {'Content-Type':  undefined}
             }).then(function (response) {
-                message.file = response.data;
+                message.file = response.data.file;
                 $http.post("/exchanger/main/sendMessage",message).then(function (response) {
-                    $scope.statusSendMessage = response.data;
+                    $scope.isAlertShow = response.data;
+                    $scope.isSuccess = response.data.isSuccess;
+                    $scope.body = response.data.body;
                 });
             }).catch(function () {
                 console.log(message);
@@ -201,11 +166,11 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             });
             } else {
                 $http.post("/exchanger/main/sendMessage", message).then(function (response) {
-                    $scope.statusSendMessage = response.data;
+                    $scope.isAlertShow = response.data;
+                    $scope.isSuccess = response.data.isSuccess;
+                    $scope.body = response.data.body;
                 });
             }
-        } else {
-            $scope.statusSendMessage = "Тема повинна бути обов'язково";
         }
     };
 

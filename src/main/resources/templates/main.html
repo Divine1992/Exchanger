@@ -23,6 +23,16 @@
                 <span style="color:#35386b;font-weight:bold" th:utext="${userName}" data-th-attr="ng-init='senderFullName = \''+${userName}+'\''"></span>
             </div>
         </div>
+        <div ng-show="isAlertShow">
+            <div ng-show="isSuccess" class="alert alert-success alert-dismissable fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{body}}</strong>
+            </div>
+            <div ng-show="!isSuccess" class="alert alert-danger alert-dismissable fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>{{body}}</strong>
+            </div>
+        </div>
     </nav>
 </header>
 <div class="container-fluid">
@@ -44,7 +54,7 @@
                 </tr>
                 <tr ng-repeat-end="info in informations" ng-show="showDetails">
                     <td colspan="2">{{info.value}}</td>
-                    <td><a target="_blank" ng-if="info.file != null" ng-click="downloadFile(info)">download</a></td>
+                    <td><a target="_blank" ng-if="info.file != null" href="/exchanger/main/downloadFile/{{info.file}}">Скачати</a></td>
                 </tr>
              </tbody>
              <tbody ng-show="showMessages">
@@ -55,7 +65,7 @@
                  </tr>
                  <tr ng-repeat-end="mes in messages" ng-show="showDetails">
                      <td colspan="2">{{mes.value}}</td>
-                     <td><a target="_blank" ng-if="mes.file != null" ng-click="downloadFile(mes)">download</a></td>
+                     <td><a target="_blank" ng-if="mes.file != null" href="/exchanger/main/downloadFile/{{mes.file}}">download</a></td>
                  </tr>
              </tbody>
          </table>
@@ -108,10 +118,10 @@
                         <div class="modal-body">
                             <form role="form">
                                 <div class="form-group" ng-show="!isSubscriber">
-                                    <button class="btn btn-info form-control" ng-click="subscribeOn(user)">Підписатись</button>
+                                    <button data-dismiss="modal" class="btn btn-info form-control" ng-click="subscribeOn(user)">Підписатись</button>
                                 </div>
                                 <div class="form-group" ng-show="isSubscriber">
-                                    <button class="btn btn-info form-control" ng-click="subscribeOff(user)">Більше не цікавитись</button>
+                                    <button data-dismiss="modal" class="btn btn-info form-control" ng-click="subscribeOff(user)">Більше не цікавитись</button>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-success form-control" ng-click="clearSendMenu()" data-target="#sendMessage" data-toggle="modal" data-dismiss="modal">Відправити особисте повідомлення</button>
@@ -142,12 +152,9 @@
                                         <input id="messageUploadFile" name="messageUploadFile" type="file" file-model="fileName"/>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="submit" class="btn btn-primary" ng-click="sendMessage(message, fileName)">Відправити</button>
+                                        <button type="submit" data-dismiss="modal" class="btn btn-primary" ng-click="sendMessage(message, fileName)">Відправити</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <span style="font-size: 20; color: #FF1C19;">{{statusSendMessage}}</span>
                             </div>
                         </div>
                     </div>
@@ -174,12 +181,9 @@
                                         <input id="infoUploadFile" name="infoUploadFile" type="file" file-model="fileName"/>
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="submit" class="btn btn-primary" ng-click="postInfo(information, fileName)">Опублікувати</button>
+                                        <button type="submit" data-dismiss="modal" class="btn btn-primary" ng-click="postInfo(information, fileName)">Опублікувати</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <span style="font-size: 20; color: #FF1C19;">{{statusPostInformation}}</span>
                             </div>
                         </div>
                     </div>

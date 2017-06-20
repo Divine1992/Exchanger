@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/getSubscribers")
-    public Set<User> getSubscribers(){
+    public List<User> getSubscribers(){
         return activityUser.getSubscribers();
     }
 

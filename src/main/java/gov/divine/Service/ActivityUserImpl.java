@@ -53,12 +53,12 @@ public class ActivityUserImpl implements ActivityUser {
     }
 
     @Override
-    public Set<User> getSubscribers() {
+    public List<User> getSubscribers() {
         return getCurrentUser().getSubscribers().stream()
                 .sorted(Comparator.comparing(User::getSubvision)
                 .thenComparing(User::getSurname)
                 .thenComparing(User::getName))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
