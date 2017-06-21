@@ -12,13 +12,37 @@ var app = angular.module("app", [])
             });
         }
     };
-}]), oldFile, allData;
+}]), oldFile, allData, informationsForDelete="", messagesForDelete = "";
+
+app.controller("sortController", function ($scope) {
+   $scope.sortType= "sendDate";
+   $scope.sortReverse= true;
+   $scope.searchSurname= '';
+});
 
 app.controller("main", function ($scope, $http, $interval, $window) {
-    $scope.optionsValue = 1;
-    $http.get("/exchanger/main/getAllUsers").then(function (response) {
-        $scope.users = response.data;
-    });
+
+    $scope.deleteInformation = function (id) {
+      $http.get("/exchanger/main/deleteInformation/"+id).then(function (response) {
+         $scope.headShow = true;
+         $scope.showMessages = false;
+         $scope.isMyInfo = true;
+         allData = response.data;
+         $scope.position = 0;
+         $scope.informations = allData[$scope.position];
+      });
+    };
+
+    $scope.deleteMessage = function (id) {
+      $http.get("/exchanger/main/deleteMessage/"+id).then(function (response) {
+         $scope.headShow = true;
+            $scope.showMessages = true;
+            allData = response.data;
+            $scope.position = 0;
+            $scope.messages = allData[$scope.position];
+            $scope.isSendMessages = true;
+      });
+    };
 
     $scope.fillUser = function (user) {
         $scope.user = user;
@@ -70,6 +94,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     
     $scope.getSendMessages = function () {
         $http.get("/exchanger/main/"+$scope.senderUserId+"/sendMessages").then(function (response) {
+            $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
             $scope.position = 0;
@@ -80,6 +105,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
 
     $scope.getReceiveMessages = function () {
         $http.get("/exchanger/main/"+$scope.senderUserId+"/receiveMessages").then(function (response) {
+            $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
             $scope.position = 0;
@@ -122,7 +148,9 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     
     $scope.getMyInfo = function () {
       $http.get("/exchanger/main/"+$scope.senderUserId+"/getMyInformations").then(function (response) {
+         $scope.headShow = true;
          $scope.showMessages = false;
+         $scope.isMyInfo = true;
          allData = response.data;
          $scope.position = 0;
          $scope.informations = allData[$scope.position];
@@ -131,7 +159,9 @@ app.controller("main", function ($scope, $http, $interval, $window) {
 
     $scope.getAllInfo = function () {
        $http.get("/exchanger/main//getSubscribersInfo").then(function (response) {
+         $scope.headShow = true;
          $scope.showMessages = false;
+         $scope.isMyInfo = false;
          allData = response.data;
          $scope.position = 0;
          $scope.informations = allData[$scope.position];
