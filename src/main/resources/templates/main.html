@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Exchanger</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="/js/angular.min.js"></script>
-    <script type="text/javascript" src="/js/jquery-3.2.0.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/css/main.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/angularjs/angular.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
 </head>
 <body ng-controller="main" data-th-attr="ng-init='senderUserId = \''+${currentUserId}+'\''">
 <header>
@@ -16,6 +17,9 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/exchanger/logout">Exchanger</a>
+            </div>
+            <div class="navbar-text navbar-left">
+                <button class="btn btn-info btn-block" ng-click="clearPostMenu()" data-target="#postInformation" data-toggle="modal">Додати новину</button>
             </div>
             <span th:utext="${msgStatus}"></span>
             <div class="navbar-text navbar-right">
@@ -35,19 +39,43 @@
         </div>
     </nav>
 </header>
-<div class="container-fluid">
+<div class="container-fluid" ng-controller="sortController">
   <div class="row">
     <div class="col-sm-2" >
-        <button class="btn btn-link btn-block" ng-click="getReceiveMessages()">Одержані повідомлення</button>
-        <button class="btn btn-link btn-block" ng-click="getSendMessages()">Відправлені повідомлення</button>
-        <button class="btn btn-link btn-block" ng-click="getMyInfo()">Мої опубліковані дані</button>
-        <button class="btn btn-link btn-block" ng-click="getAllInfo()">Новини</button>
-        <button class="btn btn-link btn-block" ng-click="clearPostMenu()" data-target="#postInformation" data-toggle="modal">Додати інформацію</button>
+        <button class="btn btn-default btn-block" ng-click="getReceiveMessages()">Одержані повідомлення</button>
+        <button class="btn btn-default btn-block" ng-click="getSendMessages()">Відправлені повідомлення</button>
+        <button class="btn btn-default btn-block" ng-click="getMyInfo()">Мої опубліковані новини</button>
+        <button class="btn btn-default btn-block" ng-click="getAllInfo()">Новини</button>
     </div>
     <div class="col-md-8">
          <table class="table table-hover table-bordered table-striped">
+             <thead>
+                <tr>
+                    <th>
+                        <a href="#" ng-click="sortType = 'userFullName'; sortReverse = !sortReverse">
+                            Користувач
+                            <span ng-show="(sortType == 'userFullName') &amp;&amp; (!sortReverse)" class="fa fa-arrow-circle-down"></span>
+                            <span ng-show="(sortType == 'userFullName') &amp;&amp; (sortReverse)" class="fa fa-arrow-circle-up"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortType = 'theme'; sortReverse = !sortReverse">
+                            Тема
+                            <span ng-show="(sortType == 'theme') &amp;&amp; (!sortReverse)" class="fa fa-arrow-circle-down"></span>
+                            <span ng-show="(sortType == 'theme') &amp;&amp; (sortReverse)" class="fa fa-arrow-circle-up"></span>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortType = 'sendDate'; sortReverse = !sortReverse">
+                            Дата
+                            <span ng-show="(sortType == 'sendDate') &amp;&amp; (!sortReverse)" class="fa fa-arrow-circle-down"></span>
+                            <span ng-show="(sortType == 'sendDate') &amp;&amp; (sortReverse)" class="fa fa-arrow-circle-up"></span>
+                        </a>
+                    </th>
+                </tr>
+             </thead>
              <tbody ng-show="!showMessages">
-                <tr ng-repeat-start="info in informations" class="pointer">
+                <tr ng-repeat-start="info in informations | orderBy:sortType:sortReverse" class="pointer">
                     <td style="width: 15%;" ng-click="showDetails = !showDetails">{{info.userFullName}}</td>
                     <td style="width: 80%;" ng-click="showDetails = !showDetails">{{info.theme}}</td>
                     <td style="width: 20%;" ng-click="showDetails = !showDetails">{{info.sendDate | date:'dd/MM/yyyy  HH:mm:ss'}}</td>
@@ -58,14 +86,14 @@
                 </tr>
              </tbody>
              <tbody ng-show="showMessages">
-                 <tr ng-repeat-start="mes in messages" class="pointer">
+                 <tr ng-repeat-start="mes in messages | orderBy:sortType:sortReverse" class="pointer">
                      <td style="width: 15%;" ng-click="showDetails = !showDetails">{{isSendMessages ? mes.receiverFullName : mes.senderFullName}}</td>
                      <td style="width: 80%;" ng-click="showDetails = !showDetails">{{mes.theme}}</td>
                      <td style="width: 20%;" ng-click="showDetails = !showDetails">{{mes.sendDate | date:'dd/MM/yyyy  HH:mm:ss'}}</td>
                  </tr>
                  <tr ng-repeat-end="mes in messages" ng-show="showDetails">
                      <td colspan="2">{{mes.value}}</td>
-                     <td><a target="_blank" ng-if="mes.file != null" href="/exchanger/main/downloadFile/{{mes.file}}">download</a></td>
+                     <td><a target="_blank" ng-if="mes.file != null" href="/exchanger/main/downloadFile/{{mes.file}}">Скачати</a></td>
                  </tr>
              </tbody>
          </table>
@@ -73,6 +101,18 @@
     <div class="col-sm-2" style="background-color:lavender;">
         <table class="table table-bordered table-striped">
             <thead>
+                <tr>
+                    <th>
+                        <form>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"> <i class="fa fa-search"></i></div>
+                                        <input type="text" class="form-control" placeholder="Пошук за прізвищем" ng-model="searchSurname" />
+                                    </div>
+                            </div>
+                        </form>
+                    </th>
+                </tr>
                 <tr>
                     <th>
                         <div class="form-group">
@@ -86,7 +126,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="user in users" class="pointer">
+                <tr ng-repeat="user in users | filter:searchSurname" class="pointer">
                     <td data-target="#options" data-toggle="modal" ng-click="fillUser(user)">{{user.subvision +" - ("+user.surname+" "+user.name+")"}}}</td>
                 </tr>
             </tbody>
