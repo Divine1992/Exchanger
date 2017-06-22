@@ -235,6 +235,7 @@ app.controller("currentTimeDate", function ($scope,$interval) {
   };
   tick();
   $interval(tick, 1000);
+  
 });
 
 
