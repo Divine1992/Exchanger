@@ -1,28 +1,41 @@
 package gov.divine.Service;
 
 import gov.divine.Model.Message;
+import gov.divine.Model.User;
 import gov.divine.Repository.MessageRepository;
+import gov.divine.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service("messageService")
 @Scope("session")
 public class MessageServiceImpl implements MessageService {
-    private String userName;
-
+    private String filePath = System.getProperty("user.dir")+ File.separator+
+                                "src"+File.separator+
+                                "main"+File.separator+
+                                "resources"+File.separator+
+                                "downloads";
     @Autowired
     @Qualifier("messageRepository")
     private MessageRepository messageRepository;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    @Qualifier("userRepository")
+    private UserRepository userRepository;
 
     @Override
     public boolean save(Message message) {
@@ -43,6 +56,17 @@ public class MessageServiceImpl implements MessageService {
         return separateList(myMessages);
     }
 
+    @Override
+    public List<List<Message>> delete(Long id) {
+        Message message = messageRepository.findOne(id);
+        if (message.getFile() != null || !Objects.equals(message.getFile(), "")){
+            File file = new File(filePath+File.separator+message.getFile());
+            file.delete();
+        }
+        messageRepository.delete(id);
+        return sendMessages(getCurrentUser().getId());
+    }
+
     public List<List<Message>> separateList(List<Message> allMessages){
         List<List<Message>> resultList = new ArrayList<>();
         List<Message> addList = new ArrayList<>(11);
@@ -56,24 +80,9 @@ public class MessageServiceImpl implements MessageService {
         return resultList;
     }
 
-    /*
-    @Override
-    public List<List<Message>> findByFromLoginOrToLogin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByLogin(auth.getName());
-        String userName = user.getSubvision() + " - (" + user.getName() + " " + user.getSurname()+")";
-        List<Message> messages = messageRepository.findByFromLoginOrToLoginOrderBySendDateDesc(userName, userName);
-        List<List<Message>> resultList = new ArrayList<>();
-        List<Message> list = new ArrayList<>(18);
-        for (int i = 0; i < messages.size(); i++){
-            list.add(messages.get(i));
-            if (list.size() == 18 || i == messages.size()-1){
-                List<Message> setList = new ArrayList<>(list);
-                resultList.add(setList);
-                list.clear();
-            }
-        }
-        return resultList;
-    }*/
+    private User getCurrentUser(){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            return userRepository.findByLogin(auth.getName());
+     }
 
 }

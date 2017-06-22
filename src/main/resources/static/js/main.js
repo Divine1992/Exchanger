@@ -21,6 +21,10 @@ app.controller("sortController", function ($scope) {
 });
 
 app.controller("main", function ($scope, $http, $interval, $window) {
+    $http.get("/exchanger/main/getAllUsers").then(function (response) {
+            $scope.users = response.data;
+        }
+    );
 
     $scope.deleteInformation = function (id) {
       $http.get("/exchanger/main/deleteInformation/"+id).then(function (response) {
@@ -54,13 +58,13 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     $scope.getUsers = function (optionsValue) {
       if(optionsValue == 1) {
           $http.get("/exchanger/main/getAllUsers").then(function (response) {
-              $scope.users = response.data;});
+            $scope.users = response.data;});
       } else if (optionsValue == 2){
           $http.get("/exchanger/main/getSubscribers").then(function (response) {
-          $scope.users = response.data;});
+            $scope.users = response.data;});
       } else {
           $http.get("/exchanger/main/getActiveUsers").then(function (response) {
-          $scope.users = response.data;});
+            $scope.users = response.data;});
       }
    };
 

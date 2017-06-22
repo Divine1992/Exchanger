@@ -8,4 +8,5 @@ public interface MessageService {
     boolean save(Message message);
     List<List<Message>> sendMessages(Long senderUserId);
     List<List<Message>> recieveMessages(Long receiverUserSId);
+    List<List<Message>> delete(Long id);
 }

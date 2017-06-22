@@ -11,16 +11,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("informationService")
 @Scope("request")
 public class InformationServiceImpl implements InformationService{
-
+    private String filePath = System.getProperty("user.dir")+ File.separator+
+                                "src"+File.separator+
+                                "main"+File.separator+
+                                "resources"+File.separator+
+                                "downloads";
     @Autowired
     @Qualifier("userRepository")
     private UserRepository userRepository;
@@ -28,7 +30,6 @@ public class InformationServiceImpl implements InformationService{
     @Autowired
     @Qualifier("informationRepository")
     private InformationRepository informationRepository;
-    private User currentUser;
 
     @Override
     public boolean save(Information information) {
@@ -53,6 +54,17 @@ public class InformationServiceImpl implements InformationService{
         return separateList(allSubscribersInfo);
     }
 
+    @Override
+    public List<List<Information>> delete(Long id) {
+        Information information = informationRepository.findOne(id);
+        if (information.getFile() != null || !Objects.equals(information.getFile(), "")){
+            File file = new File(filePath+File.separator+information.getFile());
+            file.delete();
+        }
+        informationRepository.delete(id);
+        return getMyInfo(getCurrentUser().getId());
+    }
+
     public static List<List<Information>> separateList(List<Information> allList){
         List<List<Information>> resultList = new ArrayList<>();
         List<Information> addList = new ArrayList<>(11);
@@ -67,10 +79,7 @@ public class InformationServiceImpl implements InformationService{
     }
 
      private User getCurrentUser(){
-        if (currentUser == null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            currentUser = userRepository.findByLogin(auth.getName());
-        }
-        return currentUser;
-    }
+            return userRepository.findByLogin(auth.getName());
+     }
 }

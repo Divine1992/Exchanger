@@ -16,7 +16,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/exchanger/logout">Exchanger</a>
+                <a class="navbar-brand" title="Вихід" href="/exchanger/logout">Exchanger</a>
             </div>
             <div class="navbar-text navbar-left">
                 <button class="btn btn-info btn-block" ng-click="clearPostMenu()" data-target="#postInformation" data-toggle="modal">Додати новину</button>
@@ -49,8 +49,9 @@
     </div>
     <div class="col-md-8">
          <table class="table table-hover table-bordered table-striped">
-             <thead>
+             <thead ng-show="headShow">
                 <tr>
+                    <th></th>
                     <th>
                         <a href="#" ng-click="sortType = 'userFullName'; sortReverse = !sortReverse">
                             Користувач
@@ -76,23 +77,25 @@
              </thead>
              <tbody ng-show="!showMessages">
                 <tr ng-repeat-start="info in informations | orderBy:sortType:sortReverse" class="pointer">
+                    <td style="width: 5%;"><button title="Видалити" ng-show="isMyInfo" class="btn btn-xs btn-danger" ng-click="deleteInformation(info.id)">X</button></td>
                     <td style="width: 15%;" ng-click="showDetails = !showDetails">{{info.userFullName}}</td>
-                    <td style="width: 80%;" ng-click="showDetails = !showDetails">{{info.theme}}</td>
+                    <td style="width: 75%;" ng-click="showDetails = !showDetails">{{info.theme}}</td>
                     <td style="width: 20%;" ng-click="showDetails = !showDetails">{{info.sendDate | date:'dd/MM/yyyy  HH:mm:ss'}}</td>
                 </tr>
                 <tr ng-repeat-end="info in informations" ng-show="showDetails">
-                    <td colspan="2">{{info.value}}</td>
+                    <td colspan="3">{{info.value}}</td>
                     <td><a target="_blank" ng-if="info.file != null" href="/exchanger/main/downloadFile/{{info.file}}">Скачати</a></td>
                 </tr>
              </tbody>
              <tbody ng-show="showMessages">
                  <tr ng-repeat-start="mes in messages | orderBy:sortType:sortReverse" class="pointer">
+                     <td style="width: 5%;"><button title="Видалити" ng-show="isSendMessages" class="btn btn-xs btn-danger" ng-click="deleteMessage(mes.id)">X</button></td>
                      <td style="width: 15%;" ng-click="showDetails = !showDetails">{{isSendMessages ? mes.receiverFullName : mes.senderFullName}}</td>
-                     <td style="width: 80%;" ng-click="showDetails = !showDetails">{{mes.theme}}</td>
+                     <td style="width: 75%;" ng-click="showDetails = !showDetails">{{mes.theme}}</td>
                      <td style="width: 20%;" ng-click="showDetails = !showDetails">{{mes.sendDate | date:'dd/MM/yyyy  HH:mm:ss'}}</td>
                  </tr>
                  <tr ng-repeat-end="mes in messages" ng-show="showDetails">
-                     <td colspan="2">{{mes.value}}</td>
+                     <td colspan="3">{{mes.value}}</td>
                      <td><a target="_blank" ng-if="mes.file != null" href="/exchanger/main/downloadFile/{{mes.file}}">Скачати</a></td>
                  </tr>
              </tbody>
@@ -107,7 +110,7 @@
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-addon"> <i class="fa fa-search"></i></div>
-                                        <input type="text" class="form-control" placeholder="Пошук за прізвищем" ng-model="searchSurname" />
+                                        <input type="text" class="form-control" placeholder="Пошук" ng-model="searchSurname" />
                                     </div>
                             </div>
                         </form>
@@ -116,8 +119,8 @@
                 <tr>
                     <th>
                         <div class="form-group">
-                            <select ng-model="optionsValue" class="form-control" ng-change="getUsers(optionsValue)">
-                                <option value="1" selected="selected">Всі користувачі</option>
+                            <select ng-init="optionsValue = '1'" ng-model="optionsValue" class="form-control" ng-change="getUsers(optionsValue)">
+                                <option value="1">Всі користувачі</option>
                                 <option value="2">Цікаві нам</option>
                                 <option value="3">В мережі</option>
                             </select>
