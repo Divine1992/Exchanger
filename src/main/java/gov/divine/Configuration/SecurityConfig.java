@@ -36,20 +36,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.
 			authorizeRequests()
-				.antMatchers("/exchanger", "/exchanger/error", "/exchanger/login", "/exchanger/registration").permitAll()
+				.antMatchers("/", "/error", "/login", "/registration").permitAll()
 				.anyRequest().authenticated().and().csrf().disable()
 				.formLogin()
-					.loginPage("/exchanger/login").failureUrl("/exchanger/login?error=true")
-					.defaultSuccessUrl("/exchanger/main", true)
+					.loginPage("/exchanger/login").failureUrl("/login?error=true")
+					.defaultSuccessUrl("/main", true)
 					.usernameParameter("login")
 					.passwordParameter("password")
 				.and().logout()
-					.logoutRequestMatcher(new AntPathRequestMatcher("/exchanger/logout"))
-					.logoutSuccessUrl("/exchanger/login")
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessUrl("/login")
 				.and().sessionManagement()
 					.maximumSessions(1)
 					.maxSessionsPreventsLogin(false)
-					.expiredUrl("/exchanger/login")
+					.expiredUrl("/login")
 					.sessionRegistry(sessionRegistry());
 	}
 
