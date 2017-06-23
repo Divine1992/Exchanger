@@ -16,7 +16,7 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" title="Вихід" href="/exchanger/logout">Exchanger</a>
+                <a class="navbar-brand" title="Вихід" href="/logout">Exchanger</a>
             </div>
             <div class="navbar-text navbar-left">
                 <button class="btn btn-info btn-block" ng-click="clearPostMenu()" data-target="#postInformation" data-toggle="modal">Додати новину</button>
@@ -84,7 +84,7 @@
                 </tr>
                 <tr ng-repeat-end="info in informations" ng-show="showDetails">
                     <td colspan="3">{{info.value}}</td>
-                    <td><a target="_blank" ng-if="info.file != null" href="/exchanger/main/downloadFile/{{info.file}}">Скачати</a></td>
+                    <td><a target="_blank" ng-if="info.file != null" href="/main/downloadFile/{{info.file}}">Скачати</a></td>
                 </tr>
              </tbody>
              <tbody ng-show="showMessages">
@@ -96,7 +96,7 @@
                  </tr>
                  <tr ng-repeat-end="mes in messages" ng-show="showDetails">
                      <td colspan="3">{{mes.value}}</td>
-                     <td><a target="_blank" ng-if="mes.file != null" href="/exchanger/main/downloadFile/{{mes.file}}">Скачати</a></td>
+                     <td><a target="_blank" ng-if="mes.file != null" href="/main/downloadFile/{{mes.file}}">Скачати</a></td>
                  </tr>
              </tbody>
          </table>
