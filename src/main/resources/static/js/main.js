@@ -21,13 +21,13 @@ app.controller("sortController", function ($scope) {
 });
 
 app.controller("main", function ($scope, $http, $interval, $window) {
-    $http.get("/exchanger/main/getAllUsers").then(function (response) {
+    $http.get("/main/getAllUsers").then(function (response) {
             $scope.users = response.data;
         }
     );
 
     $scope.deleteInformation = function (id) {
-      $http.get("/exchanger/main/deleteInformation/"+id).then(function (response) {
+      $http.get("/main/deleteInformation/"+id).then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = true;
@@ -38,7 +38,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.deleteMessage = function (id) {
-      $http.get("/exchanger/main/deleteMessage/"+id).then(function (response) {
+      $http.get("/main/deleteMessage/"+id).then(function (response) {
          $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
@@ -50,30 +50,30 @@ app.controller("main", function ($scope, $http, $interval, $window) {
 
     $scope.fillUser = function (user) {
         $scope.user = user;
-        $http.get("/exchanger/main/isSubscriber/"+user.id).then(function (response) {
+        $http.get("/main/isSubscriber/"+user.id).then(function (response) {
             $scope.isSubscriber = response.data.isSubscriber;
         });
     };
    
     $scope.getUsers = function (optionsValue) {
       if(optionsValue == 1) {
-          $http.get("/exchanger/main/getAllUsers").then(function (response) {
+          $http.get("/main/getAllUsers").then(function (response) {
             $scope.users = response.data;});
       } else if (optionsValue == 2){
-          $http.get("/exchanger/main/getSubscribers").then(function (response) {
+          $http.get("/main/getSubscribers").then(function (response) {
             $scope.users = response.data;});
       } else {
-          $http.get("/exchanger/main/getActiveUsers").then(function (response) {
+          $http.get("/main/getActiveUsers").then(function (response) {
             $scope.users = response.data;});
       }
    };
 
     $scope.subscribeOn = function (user) {
-        $http.post("/exchanger/main/subscribeOn", user);
+        $http.post("/main/subscribeOn", user);
     };
 
     $scope.subscribeOff = function (user) {
-        $http.post("/exchanger/main/subscribeOff", user);
+        $http.post("/main/subscribeOff", user);
     };
 
     $scope.goForward = function () {
@@ -97,7 +97,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
     
     $scope.getSendMessages = function () {
-        $http.get("/exchanger/main/"+$scope.senderUserId+"/sendMessages").then(function (response) {
+        $http.get("/main/"+$scope.senderUserId+"/sendMessages").then(function (response) {
             $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
@@ -108,7 +108,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.getReceiveMessages = function () {
-        $http.get("/exchanger/main/"+$scope.senderUserId+"/receiveMessages").then(function (response) {
+        $http.get("/main/"+$scope.senderUserId+"/receiveMessages").then(function (response) {
             $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
@@ -127,21 +127,18 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/exchanger/main/uploadFile", fd, {
+            $http.post("/main/uploadFile", fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type':  undefined}
             }).then(function (response) {
                 information.file = response.data.file;
-                $http.post("/exchanger/main/postInformation",information).then(function (response) {
+                $http.post("/main/postInformation",information).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
                 });
-            }).catch(function () {
-                $scope.statusPostInformation = 'Помилка додавання інформації';
-            });
-            } else {
-                $http.post("/exchanger/main/postInformation",information).then(function (response) {
+            })} else {
+                $http.post("/main/postInformation",information).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
@@ -151,7 +148,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
     
     $scope.getMyInfo = function () {
-      $http.get("/exchanger/main/"+$scope.senderUserId+"/getMyInformations").then(function (response) {
+      $http.get("/main/"+$scope.senderUserId+"/getMyInformations").then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = true;
@@ -162,7 +159,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.getAllInfo = function () {
-       $http.get("/exchanger/main//getSubscribersInfo").then(function (response) {
+       $http.get("/main//getSubscribersInfo").then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = false;
@@ -184,22 +181,18 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/exchanger/main/uploadFile", fd, {
+            $http.post("/main/uploadFile", fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type':  undefined}
             }).then(function (response) {
                 message.file = response.data.file;
-                $http.post("/exchanger/main/sendMessage",message).then(function (response) {
+                $http.post("/main/sendMessage",message).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
                 });
-            }).catch(function () {
-                console.log(message);
-                $scope.statusSendMessage = 'Помилка відправлення';
-            });
-            } else {
-                $http.post("/exchanger/main/sendMessage", message).then(function (response) {
+            })} else {
+                $http.post("/main/sendMessage", message).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;

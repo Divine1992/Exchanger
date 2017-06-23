@@ -15,7 +15,6 @@ import javax.validation.Valid;
 
 @RestController
 @Scope("session")
-@RequestMapping("/exchanger")
 public class AdminController {
 
     @Autowired

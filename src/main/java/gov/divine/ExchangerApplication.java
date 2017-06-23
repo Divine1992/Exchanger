@@ -13,7 +13,6 @@ public class ExchangerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ExchangerApplication.class, args);
 	}
-
 	/*@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(ExchangerApplication.class);

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/exchanger/main")
+@RequestMapping("/main")
 @Scope("session")
 public class DownloadUploadController {
 

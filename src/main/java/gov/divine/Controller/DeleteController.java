@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/exchanger/main")
+@RequestMapping("/main")
 @Scope("request")
 public class DeleteController {
 
