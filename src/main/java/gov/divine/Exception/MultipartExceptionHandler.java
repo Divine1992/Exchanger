@@ -18,7 +18,7 @@ public class MultipartExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MultipartException.class)
     @ResponseBody
     public String handleFileException(HttpServletRequest request, MultipartException ex) {
-        System.err.println("errorororororrrr");
+        System.err.println("Error");
         return "Файл занадто великий, максимальний розмір файлу "+maxFileSize;
     }
 

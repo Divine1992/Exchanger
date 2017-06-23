@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Ввійти</title>
-    <script type="text/javascript" src="/js/angular.min.js"></script>
-    <script type="text/javascript" src="/js/jquery-3.2.0.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="/js/registration.js"></script>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/angularjs/angular.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
 </head>
 <body>
 <header>
@@ -39,7 +41,7 @@
     </div>
 </div>
 <footer class="footer" style="position: absolute; bottom:0;background-color: #f5f5f5; width: 100%">
-    <div ng-app="admin" ng-controller="currentTimeDate" >
+    <div ng-app="app" ng-controller="currentTimeDate" >
         <b>{{clock  | date:'HH:mm:ss  --  dd/MM/yyyy'}}</b>
     </div>
 </footer>

@@ -4,7 +4,6 @@ import gov.divine.Model.User;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface ActivityUser {
     List<User> getAllUsers();

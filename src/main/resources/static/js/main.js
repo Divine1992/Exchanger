@@ -12,7 +12,7 @@ var app = angular.module("app", [])
             });
         }
     };
-}]), oldFile, allData, informationsForDelete="", messagesForDelete = "";
+}]), oldFile, allData;
 
 app.controller("sortController", function ($scope) {
    $scope.sortType= "sendDate";

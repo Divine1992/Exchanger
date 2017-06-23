@@ -19,6 +19,6 @@ public class MessageServiceImplTest {
         }
         MessageServiceImpl messageService = new MessageServiceImpl();
         List<List<Message>> results = messageService.separateList(allList);
-        assertEquals(11, results.get(results.size()-2).size());
+        assertEquals(11, results.get(results.size()-1).size());
     }
 }

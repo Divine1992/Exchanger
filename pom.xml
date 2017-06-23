@@ -9,13 +9,13 @@
 	<packaging>jar</packaging>
 
 	<name>exchanger</name>
-	<description>Demo project for Exchanger</description>
+	<description>Exchanger</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.3.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<properties>
@@ -80,9 +80,16 @@
     		<artifactId>angularjs</artifactId>
     		<version>1.6.4</version>
 		</dependency>
+		<!-- Tomcat dependency
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>-->
     </dependencies>
 
 	<build>
+		<!--<finalName>exchanger</finalName>-->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
