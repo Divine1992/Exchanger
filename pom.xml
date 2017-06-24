@@ -6,7 +6,7 @@
 	<groupId>gov.divine</groupId>
 	<artifactId>exchanger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>exchanger</name>
 	<description>Exchanger</description>
@@ -80,16 +80,16 @@
     		<artifactId>angularjs</artifactId>
     		<version>1.6.4</version>
 		</dependency>
-		<!-- Tomcat dependency
+		<!-- Tomcat dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
-		</dependency>-->
+		</dependency>
     </dependencies>
 
 	<build>
-		<!--<finalName>exchanger</finalName>-->
+		<finalName>exchanger</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
