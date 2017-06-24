@@ -62,19 +62,23 @@ public class ActivityUserImpl implements ActivityUser {
     }
 
     @Override
-    public void subscribeOn(User user) {
+    public boolean subscribeOn(User user) {
         User currentUser = getCurrentUser();
         if (currentUser.getSubscribers().add(user)){
             userRepository.save(currentUser);
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void subscribeOff(User user) {
+    public boolean subscribeOff(User user) {
         User currentUser = getCurrentUser();
         if (currentUser.getSubscribers().remove(user)){
             userRepository.save(currentUser);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -93,5 +97,4 @@ public class ActivityUserImpl implements ActivityUser {
         }
         return currentUser;
     }
-
 }
