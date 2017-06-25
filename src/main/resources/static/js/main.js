@@ -14,20 +14,29 @@ var app = angular.module("app", [])
     };
 }]), oldFile, allData;
 
+app.config(['$httpProvider', function($httpProvider) {
+    if (!$httpProvider.defaults.headers.get) {
+        $httpProvider.defaults.headers.get = {};
+    }
+    $httpProvider.defaults.headers.get['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+    $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+    $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
+}]);
+
 app.controller("sortController", function ($scope) {
    $scope.sortType= "sendDate";
    $scope.sortReverse= true;
    $scope.searchSurname= '';
 });
 
-app.controller("main", function ($scope, $http, $interval, $window) {
-    $http.get("/main/getAllUsers").then(function (response) {
+app.controller("main", function ($scope, $http, $timeout) {
+    $http.get("/exchanger/main/getAllUsers").then(function (response) {
             $scope.users = response.data;
         }
     );
 
     $scope.deleteInformation = function (id) {
-      $http.get("/main/deleteInformation/"+id).then(function (response) {
+      $http.get("/exchanger/main/deleteInformation/"+id).then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = true;
@@ -38,42 +47,52 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.deleteMessage = function (id) {
-      $http.get("/main/deleteMessage/"+id).then(function (response) {
-         $scope.headShow = true;
-            $scope.showMessages = true;
-            allData = response.data;
-            $scope.position = 0;
-            $scope.messages = allData[$scope.position];
-            $scope.isSendMessages = true;
+      $http.get("/exchanger/main/deleteMessage/"+id).then(function (response) {
+          $scope.headShow = true;
+          $scope.showMessages = true;
+          allData = response.data;
+          $scope.position = 0;
+          $scope.messages = allData[$scope.position];
+          $scope.isSendMessages = true;
       });
     };
 
     $scope.fillUser = function (user) {
         $scope.user = user;
-        $http.get("/main/isSubscriber/"+user.id).then(function (response) {
+        $http.get("/exchanger/main/isSubscriber/"+user.id).then(function (response) {
             $scope.isSubscriber = response.data.isSubscriber;
         });
     };
    
     $scope.getUsers = function (optionsValue) {
       if(optionsValue == 1) {
-          $http.get("/main/getAllUsers").then(function (response) {
+          $http.get("/exchanger/main/getAllUsers").then(function (response) {
             $scope.users = response.data;});
       } else if (optionsValue == 2){
-          $http.get("/main/getSubscribers").then(function (response) {
+          $http.get("/exchanger/main/getSubscribers").then(function (response) {
             $scope.users = response.data;});
       } else {
-          $http.get("/main/getActiveUsers").then(function (response) {
+          $http.get("/exchanger/main/getActiveUsers").then(function (response) {
             $scope.users = response.data;});
       }
    };
 
     $scope.subscribeOn = function (user) {
-        $http.post("/main/subscribeOn", user);
+        $http.post("/exchanger/main/subscribeOn", user).then(function (response) {
+            $scope.isAlertShow = response.data;
+            $scope.isSuccess = response.data.isSuccess;
+            $scope.body = response.data.body;
+            refreshUsers();
+        });
     };
 
     $scope.subscribeOff = function (user) {
-        $http.post("/main/subscribeOff", user);
+        $http.post("/exchanger/main/subscribeOff", user).then(function (response) {
+            $scope.isAlertShow = response.data;
+            $scope.isSuccess = response.data.isSuccess;
+            $scope.body = response.data.body;
+            refreshUsers();
+        });
     };
 
     $scope.goForward = function () {
@@ -97,7 +116,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
     
     $scope.getSendMessages = function () {
-        $http.get("/main/"+$scope.senderUserId+"/sendMessages").then(function (response) {
+        $http.get("/exchanger/main/"+$scope.senderUserId+"/sendMessages").then(function (response) {
             $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
@@ -108,7 +127,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.getReceiveMessages = function () {
-        $http.get("/main/"+$scope.senderUserId+"/receiveMessages").then(function (response) {
+        $http.get("/exchanger/main/"+$scope.senderUserId+"/receiveMessages").then(function (response) {
             $scope.headShow = true;
             $scope.showMessages = true;
             allData = response.data;
@@ -127,28 +146,30 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/main/uploadFile", fd, {
+            $http.post("/exchanger/main/uploadFile", fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type':  undefined}
             }).then(function (response) {
                 information.file = response.data.file;
-                $http.post("/main/postInformation",information).then(function (response) {
+                $http.post("/exchanger/main/postInformation",information).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
+                    $timeout(clearIsAlertShow,1000);
                 });
             })} else {
-                $http.post("/main/postInformation",information).then(function (response) {
+                $http.post("/exchanger/main/postInformation",information).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
+                    $timeout(clearIsAlertShow,1000);
                 });
             }
         }
     };
     
     $scope.getMyInfo = function () {
-      $http.get("/main/"+$scope.senderUserId+"/getMyInformations").then(function (response) {
+      $http.get("/exchanger/main/"+$scope.senderUserId+"/getMyInformations").then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = true;
@@ -159,7 +180,7 @@ app.controller("main", function ($scope, $http, $interval, $window) {
     };
 
     $scope.getAllInfo = function () {
-       $http.get("/main//getSubscribersInfo").then(function (response) {
+       $http.get("/exchanger/main/getSubscribersInfo").then(function (response) {
          $scope.headShow = true;
          $scope.showMessages = false;
          $scope.isMyInfo = false;
@@ -181,21 +202,23 @@ app.controller("main", function ($scope, $http, $interval, $window) {
             oldFile = fileName;
             var fd = new FormData();
             fd.append('file',fileName);
-            $http.post("/main/uploadFile", fd, {
+            $http.post("/exchanger/main/uploadFile", fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type':  undefined}
             }).then(function (response) {
                 message.file = response.data.file;
-                $http.post("/main/sendMessage",message).then(function (response) {
+                $http.post("/exchanger/main/sendMessage",message).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
+                    $timeout(clearIsAlertShow,1000);
                 });
             })} else {
-                $http.post("/main/sendMessage", message).then(function (response) {
+                $http.post("/exchanger/main/sendMessage", message).then(function (response) {
                     $scope.isAlertShow = response.data;
                     $scope.isSuccess = response.data.isSuccess;
                     $scope.body = response.data.body;
+                    $timeout(clearIsAlertShow,1000);
                 });
             }
         }
@@ -220,6 +243,25 @@ app.controller("main", function ($scope, $http, $interval, $window) {
          angular.element(elem).val(null);
     };
 
+    var refreshUsers = function () {
+        var elem = document.querySelector('#optionsValue');
+        var value = angular.element(elem).val();
+        if(value == 1) {
+          $http.get("/exchanger/main/getAllUsers").then(function (response) {
+          $scope.users = response.data;});
+        } else if (value == 2){
+          $http.get("/exchanger/main/getSubscribers").then(function (response) {
+            $scope.users = response.data;});
+        } else {
+          $http.get("/exchanger/main/getActiveUsers").then(function (response) {
+          $scope.users = response.data;});
+        }
+        $timeout(clearIsAlertShow,1000);
+    };
+
+    var clearIsAlertShow = function () {
+        $scope.isAlertShow = undefined;
+    }
 });
 
 app.controller("currentTimeDate", function ($scope,$interval) {
